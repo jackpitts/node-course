@@ -2,6 +2,7 @@
 const express = require('express')
 const router = new express.Router()
 const User = require('../models/user')
+const auth = require('../middleware/auth')
 
 // Create user (app.post)
 router.post('/users', async (req, res) => {
@@ -26,14 +27,9 @@ router.post("/users/login", async (req, res) => {
     }
 })  
 
-// Fetch all users stored in db
-router.get('/users', async (req, res) => {
-    try {
-        const users = await User.find({})
-        res.send(users)
-    } catch (e) {
-        res.status(500).send()
-    }
+// Fetch own user profile
+router.get('/users/me', auth, async (req, res) => {
+    res.send(req.user)
 })
 
 // Fetch individual user with route parameters (id)
